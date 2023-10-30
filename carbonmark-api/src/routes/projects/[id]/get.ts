@@ -2,15 +2,23 @@ import { Static } from "@sinclair/typebox";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { compact, concat, min } from "lodash";
 import { pipe, uniq } from "lodash/fp";
+import { REGISTRIES } from "../../../../../lib/constants";
 import { Activity } from "../../../models/Activity.model";
 import { DetailedProject } from "../../../models/DetailedProject.model";
 import { Listing } from "../../../models/Listing.model";
 import { CreditId } from "../../../utils/CreditId";
 import { gql_sdk } from "../../../utils/gqlSdk";
-import { fetchCarbonProject } from "../../../utils/helpers/carbonProjects.utils";
+import {
+  fetchCarbonProject,
+  type FetchCarbonProjectArgs,
+  type FetchCarbonProjectMethod,
+  type ProjectImage,
+} from "../../../utils/helpers/carbonProjects.utils";
+
 import { fetchMarketplaceListings } from "../../../utils/helpers/fetchMarketplaceListings";
 import { fetchPoolPricesAndStats } from "../../../utils/helpers/fetchPoolPricesAndStats";
 import { toGeoJSON } from "../get.utils";
+import { ICR_API } from "./../../../../src/utils/ICR/ICR_API_endpoints";
 import { schema } from "./get.schema";
 
 // Handler function for the "/projects/:id" route
@@ -23,14 +31,39 @@ const handler = (fastify: FastifyInstance) =>
     reply: FastifyReply
   ) {
     const { id } = request.params;
+
     const sdk = gql_sdk(request.query.network);
+
     const {
       vintage,
       standard: registry,
       registryProjectId,
       projectId: key,
     } = new CreditId(id);
+
+    let fetchCarbonProjectMethod: FetchCarbonProjectMethod;
+    let fetchCarbonProjectArgs: FetchCarbonProjectArgs;
+
+    switch (registry) {
+      case REGISTRIES["ICR"].id:
+        fetchCarbonProjectMethod = ICR_API(request.query.network);
+        fetchCarbonProjectArgs = {
+          serialization: id,
+          network: request.query.network || "polygon",
+        };
+        break;
+      default:
+        fetchCarbonProjectMethod = sdk;
+        fetchCarbonProjectArgs = {
+          registry,
+          registryProjectId,
+          network: request.query.network || "polygon",
+        };
+        break;
+    }
+
     let poolPrices, stats, listings, activities, projectDetails;
+
     try {
       [[poolPrices, stats], [listings, activities], projectDetails] =
         await Promise.all([
@@ -45,16 +78,12 @@ const handler = (fastify: FastifyInstance) =>
             fastify,
             expiresAfter: request.query.expiresAfter,
           }),
-          fetchCarbonProject(sdk, {
-            registry,
-            registryProjectId,
-          }),
+          fetchCarbonProject(fetchCarbonProjectMethod, fetchCarbonProjectArgs),
         ]);
     } catch (error) {
       console.error(error);
       throw error;
     }
-
     if (!projectDetails) {
       // only render pages if project details exist (render even if there are no listings!)
       return reply.notFound();
@@ -95,15 +124,18 @@ const handler = (fastify: FastifyInstance) =>
       price: String(bestPrice ?? 0), // remove trailing zeros
       prices: poolPrices,
       images:
-        projectDetails?.images?.map((image) => ({
-          caption: image?.asset?.altText,
-          url: image?.asset?.url,
-        })) ?? [],
+        projectDetails?.images
+          ?.filter((image): image is ProjectImage => !!image)
+          .map((image: ProjectImage) => ({
+            caption: image?.asset?.altText || "",
+            url: image?.asset?.url || "",
+          })) ?? [],
       activities,
       listings,
       vintage,
       stats,
     };
+
     return reply.send(JSON.stringify(projectResponse));
   };
 
