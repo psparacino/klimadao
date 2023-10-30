@@ -295,6 +295,11 @@ export const REGISTRIES = {
     title: "Gold Standard",
     url: "https://registry.goldstandard.org",
   },
+  ICR: {
+    id: "ICR",
+    title: "International Carbon Registry",
+    url: "https://www.carbonregistry.com",
+  },
 };
 
 export const verra = {
