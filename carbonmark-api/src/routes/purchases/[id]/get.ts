@@ -1,10 +1,16 @@
 import { utils } from "ethers";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { isNil } from "lodash";
+import { REGISTRIES } from "../../../../../lib/constants";
+import {
+  fetchCarbonProject,
+  type FetchCarbonProjectArgs,
+  type FetchCarbonProjectMethod,
+} from "../../../../src/utils/helpers/carbonProjects.utils";
 import { Purchase } from "../../../models/Purchase.model";
 import { CreditId } from "../../../utils/CreditId";
 import { gql_sdk } from "../../../utils/gqlSdk";
-import { fetchCarbonProject } from "../../../utils/helpers/cms.utils";
+import { ICR_API } from "./../../../../src/utils/ICR/ICR_API_endpoints";
 import { Params, Querystring, schema } from "./get.schema";
 import { isValidPurchaseId } from "./get.utils";
 
@@ -19,6 +25,7 @@ const handler = async (
     return reply.badRequest("Invalid purchase id: " + request.params.id);
   }
   const sdk = gql_sdk(request.query.network);
+
   const { purchase } = await sdk.marketplace.getPurchaseById(request.params);
 
   /** Handle the not found case */
@@ -29,10 +36,30 @@ const handler = async (
   const [standard, registryProjectId] = CreditId.splitProjectId(
     purchase.listing.project.key
   );
-  const project = await fetchCarbonProject(sdk, {
-    registry: standard,
-    registryProjectId,
-  });
+  let fetchCarbonProjectMethod: FetchCarbonProjectMethod;
+  let fetchCarbonProjectArgs: FetchCarbonProjectArgs;
+
+  switch (standard) {
+    case REGISTRIES["ICR"].id:
+      fetchCarbonProjectMethod = ICR_API(request.query.network);
+      fetchCarbonProjectArgs = {
+        serialization: request.params.id,
+        network: request.query.network || "polygon",
+      };
+      break;
+    default:
+      fetchCarbonProjectMethod = sdk;
+      fetchCarbonProjectArgs = {
+        registry: standard,
+        registryProjectId,
+        network: request.query.network || "polygon",
+      };
+      break;
+  }
+  const project = await fetchCarbonProject(
+    fetchCarbonProjectMethod,
+    fetchCarbonProjectArgs
+  );
 
   const response: Purchase = {
     id: purchase.id,
