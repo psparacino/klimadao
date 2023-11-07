@@ -11,6 +11,7 @@ import {
   getSdk as digitalCarbonSdk,
   Sdk as DigitalCarbonSdk,
 } from "../.generated/types/digitalCarbon.types";
+import { getSdk as icrSdk, Sdk as IcrSdk } from "../.generated/types/icr.types";
 import {
   getSdk as marketplaceSdk,
   Sdk as MarketplaceSdk,
@@ -33,6 +34,7 @@ export type GQL_SDK = {
   tokens: TokensSdk;
   carbon_projects: CarbonProjectsSdk;
   digital_carbon: DigitalCarbonSdk;
+  icr: IcrSdk;
 };
 
 const sdks = {
@@ -42,6 +44,7 @@ const sdks = {
   tokens: tokensSdk,
   carbon_projects: carbonProjectsSdk,
   digital_carbon: digitalCarbonSdk,
+  icr: icrSdk,
 };
 
 export const gql_sdk = (
@@ -59,5 +62,6 @@ export const gql_sdk = (
     carbon_projects: sdks.carbon_projects(
       new GraphQLClient(SANITY_URLS.carbonProjects)
     ),
+    icr: sdks.icr(new GraphQLClient(graph_urls.icr)),
   };
 };

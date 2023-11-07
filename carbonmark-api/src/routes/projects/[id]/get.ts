@@ -43,6 +43,7 @@ const handler = (fastify: FastifyInstance) =>
 
     let fetchCarbonProjectMethod: FetchCarbonProjectMethod;
     let fetchCarbonProjectArgs: FetchCarbonProjectArgs;
+    let icrSerialization: string | undefined;
 
     switch (registry) {
       case REGISTRIES["ICR"].id:
@@ -51,6 +52,7 @@ const handler = (fastify: FastifyInstance) =>
           serialization: id,
           network: request.query.network || "polygon",
         };
+        icrSerialization = id;
         break;
       default:
         fetchCarbonProjectMethod = sdk;
@@ -71,7 +73,9 @@ const handler = (fastify: FastifyInstance) =>
             key,
             vintage,
             network: request.query.network || "polygon",
+            icrSerialization,
           }),
+
           fetchMarketplaceListings(sdk, {
             key,
             vintage,

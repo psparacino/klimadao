@@ -66,7 +66,7 @@ export const fetchCarbonProject = async (
     const url = `${sdk}/public/projects?creditSerialization=${args.serialization}`;
 
     /**
-     * @todo change polygon to correct network when verified
+     * @todo change polygon to correct network when verified for polygon api
      */
     const api_key =
       args.network === "polygon"
@@ -120,7 +120,7 @@ export const fetchCarbonProject = async (
             },
           ] || null,
         shortDescription: apiData.shortDescription || null,
-        longDescription: "DOES NOT EXIST YET- TUFNEL",
+        longDescription: apiData.description || null,
         project: {
           registry: apiData.ghgProgram?.id || null,
           registryProjectId: apiData._id || null,
