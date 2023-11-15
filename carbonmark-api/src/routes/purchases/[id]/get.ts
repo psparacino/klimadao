@@ -41,13 +41,15 @@ const handler = async (
   let fetchCarbonProjectArgs: FetchCarbonProjectArgs;
 
   switch (standard) {
-    case REGISTRIES["ICR"].id:
-      fetchCarbonProjectMethod = ICR_API(request.query.network);
+    case REGISTRIES["ICR"].id: {
+      const { ICR_API_URL } = ICR_API(request.query.network);
+      fetchCarbonProjectMethod = ICR_API_URL;
       fetchCarbonProjectArgs = {
         serialization: request.params.id,
         network: request.query.network || "polygon",
       };
       break;
+    }
     default:
       fetchCarbonProjectMethod = sdk;
       fetchCarbonProjectArgs = {

@@ -301,37 +301,41 @@ export type AssetWithProject = Asset & {
 };
 
 const idFromSymbol = (symbol: string) => {
-  const [_bridge, registry, registryProjectId, vintage] = symbol
-    .toUpperCase()
-    .split("-");
-  return `${registry}-${registryProjectId}-${vintage}`;
+  if (symbol.startsWith("ICR")) {
+    return symbol;
+  } else {
+    const [_bridge, registry, registryProjectId, vintage] = symbol
+      .toUpperCase()
+      .split("-");
+    return `${registry}-${registryProjectId}-${vintage}`;
+  }
 };
 
 export const addProjectsToAssets = async (params: {
   assets: Asset[];
 }): Promise<AssetWithProject[]> => {
-  try {
-    const projectIdSet = new Set<string>();
-    params.assets.forEach((asset) => {
-      projectIdSet.add(idFromSymbol(asset.token.symbol));
-    });
-    const projectIds = Array.from(projectIdSet);
-    const projects = await Promise.all(
-      projectIds.map((id) => getCarbonmarkProject(id))
-    );
+  const { assets } = params;
 
-    const ProjectMap = projects.reduce((PMap, p) => {
-      if (p?.key) PMap.set(`${p.key}-${p.vintage}`, p);
-      return PMap;
-    }, new Map<string, DetailedProject>());
+  const projectIds = [
+    ...new Set(assets.map((asset) => idFromSymbol(asset.token.symbol))),
+  ];
 
-    return params.assets.map((a) => ({
-      ...a,
-      project: ProjectMap.get(idFromSymbol(a.token.symbol)) ?? null,
-    }));
-  } catch (e) {
-    throw e;
-  }
+  const projects = await Promise.all(
+    projectIds.map((id) => getCarbonmarkProject(id))
+  );
+
+  const ProjectMap = projects.reduce((PMap, p) => {
+    if (p?.key.startsWith("ICR")) {
+      PMap.set(p.key, p);
+    }
+    if (p?.key) PMap.set(`${p.key}-${p.vintage}`, p);
+    return PMap;
+  }, new Map<string, DetailedProject>());
+
+  return assets.map((asset) => ({
+    ...asset,
+    project: ProjectMap.get(idFromSymbol(asset.token.symbol)) ?? null,
+  }));
 };
 
 interface CompositeAssetParams {
