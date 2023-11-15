@@ -34,7 +34,7 @@ export class CreditId {
   creditId: CreditIdentifier;
 
   public static ValidCreditIdRegex =
-    /^(VCS|PURO|GS)-\d+-(19\d{2}|20\d{2})$|^ICR-[A-Z]+-\d+-(\d+-)?\d+-[A-Z]-\d+-(19\d{2}|20\d{2})$/i;
+    /^(VCS|PURO|GS|ICR)-\d+-(19\d{2}|20\d{2})$|^ICR-(?:[A-Z]+-\d+-(\d+-)?\d+-[A-Z]-\d+-(19\d{2}|20\d{2})|[A-Z]+-\d+-\d+-\d+-[A-Z]-\d+-\d+)$/i;
 
   public static ValidProjectIdRegex = /^(VCS|PURO|ICR|GS)-\d+$/i; // case insensitive
 
@@ -98,7 +98,7 @@ export class CreditId {
     }
 
     if (standard === "ICR") {
-      const registryProjectId = parts[2];
+      const registryProjectId = parts[1];
       const vintage = parts[parts.length - 1];
       return [standard, registryProjectId, vintage];
     } else {
