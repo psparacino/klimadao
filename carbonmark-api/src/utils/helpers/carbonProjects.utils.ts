@@ -110,7 +110,7 @@ export const fetchCarbonProject = async (
             {
               id: apiData.methodology.id,
               /**
-               * @todo replace with correct category once added to mapping
+               * @todo need to figure out how to import getCategoryFromMethodology to convert id to category name
                */
               category: "Other",
               name: apiData.methodology.title,

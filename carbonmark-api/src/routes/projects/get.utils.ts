@@ -202,8 +202,13 @@ const pickBestPrice = (
   poolPrices: Record<string, PoolPrice>
 ): string => {
   const listings = compact(data.marketplaceProjectData?.listings || []);
+
   // Careful, singleUnitPrice is a bigint string
-  const cheapestListing = minBy(listings, (l) => BigInt(l.singleUnitPrice));
+  const cheapestListing = minBy(
+    listings,
+    (l) => !!l.active && !l.deleted && BigInt(l.singleUnitPrice)
+  );
+
   const cheapestListingUSDC =
     cheapestListing?.singleUnitPrice &&
     formatUSDC(cheapestListing.singleUnitPrice);
@@ -241,7 +246,7 @@ export const composeProjectEntries = (
       registryProjectId,
     } = new CreditId(data.key);
 
-    // @todo create alternate construction function for ICR or convert to switch statement
+    // @todo create alternate construction function for ICR
     if (registry === "ICR") {
       const icrProject = IcrListProjects.find(
         (project) => project.num === Number(registryProjectId)
@@ -252,12 +257,13 @@ export const composeProjectEntries = (
           `Could not find ICR project with num ${registryProjectId}`
         );
       }
+
       const IcrEntry: Project = {
         methodologies: [
           {
             id: icrProject.methodology?.id,
             name: icrProject.methodology?.title,
-            category: "Other", // @todo replace with correct category from CM mapping
+            category: icrProject.methodology?.id,
           },
         ],
         description: icrProject?.shortDescription ?? null,
