@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import { compact, isNil, maxBy, minBy, sortBy } from "lodash";
 import { map } from "lodash/fp";
 import type { IcrProject } from "src/utils/ICR/icr.types";
+import { ICR_API } from "../../../src/utils/ICR/ICR_API_endpoints";
 import { convertIcrCountryCodeToName } from "../../../src/utils/ICR/icr.utils";
 import { Geopoint } from "../../.generated/types/carbonProjects.types";
 import { GetProjectsQuery } from "../../.generated/types/marketplace.types";
@@ -41,19 +42,44 @@ import { POOL_INFO } from "./get.constants";
  */
 export const getDefaultQueryArgs = async (
   sdk: GQL_SDK,
-  fastify: FastifyInstance
+  fastify: FastifyInstance,
+  network: string
 ) => {
+  const { ICR_API_URL, ICR_API_KEY } = ICR_API(network);
+  const url = `${ICR_API_URL}/public/projects/filters`;
   //Fetch all possible parameter values
-  const [category, country, vintage] = await Promise.all([
+  const [category, country, vintage, IcrResponse] = await Promise.all([
     getAllCategories(sdk, fastify).then(map(extract("id"))),
     getAllCountries(sdk, fastify).then(map(extract("id"))),
     getAllVintages(sdk, fastify),
+    await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${ICR_API_KEY}`,
+      },
+    }),
   ]);
+
+  const { vintages: IcrVintages, countryCodes: IcrCountryCodes } =
+    await IcrResponse.json();
+
+  const countryNames = await Promise.all(
+    IcrCountryCodes.map((countryCode: string) =>
+      convertIcrCountryCodeToName(countryCode)
+    )
+  );
+
+  const mergedVintages = [...vintage, ...IcrVintages];
+  const uniqueVintages = [...new Set(mergedVintages)];
+
+  const mergedCountries = [...country, ...countryNames];
+  const uniqueCountries = [...new Set(mergedCountries)];
 
   return {
     category,
-    country,
-    vintage,
+    country: uniqueCountries,
+    vintage: uniqueVintages,
     search: "",
     expiresAfter: Math.floor(Date.now() / 1000).toString(),
   };
@@ -215,7 +241,7 @@ export const composeProjectEntries = (
       registryProjectId,
     } = new CreditId(data.key);
 
-    // create alternate construction function for ICR or convert to switch statement
+    // @todo create alternate construction function for ICR or convert to switch statement
     if (registry === "ICR") {
       const icrProject = IcrListProjects.find(
         (project) => project.num === Number(registryProjectId)
@@ -226,7 +252,6 @@ export const composeProjectEntries = (
           `Could not find ICR project with num ${registryProjectId}`
         );
       }
-
       const IcrEntry: Project = {
         methodologies: [
           {
@@ -256,6 +281,10 @@ export const composeProjectEntries = (
         updatedAt: pickUpdatedAt(data),
         price: pickBestPrice(data, poolPrices),
         listings: market?.listings?.map(formatListing) || null,
+        serialization:
+          icrProject?.carbonCredits.find(
+            (credit) => credit.vintage === market?.vintage
+          )?.serialization ?? undefined,
       };
 
       entries.push(IcrEntry);
