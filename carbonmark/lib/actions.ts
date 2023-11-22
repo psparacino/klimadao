@@ -15,12 +15,7 @@ import { getContract } from "lib/networkAware/getContract";
 import { getStaticProvider } from "lib/networkAware/getStaticProvider";
 import { getTokenDecimals } from "lib/networkAware/getTokenDecimals";
 import { OnStatusHandler } from "lib/statusMessage";
-import {
-  Asset,
-  AssetForRetirement,
-  PcbProject,
-  Project,
-} from "lib/types/carbonmark.types";
+import { Asset, AssetForRetirement, Project } from "lib/types/carbonmark.types";
 import { getExpirationTimestamp } from "lib/utils/listings.utils";
 import { isNil } from "lodash";
 import { DEFAULT_EXPIRATION_DAYS, DEFAULT_MIN_FILL_AMOUNT } from "./constants";
@@ -405,7 +400,7 @@ export const addProjectsToAssets = async (params: {
 
 interface CompositeAssetParams {
   asset: Asset;
-  project: PcbProject;
+  project: PbcProject;
 }
 
 export const createCompositeAsset = (
