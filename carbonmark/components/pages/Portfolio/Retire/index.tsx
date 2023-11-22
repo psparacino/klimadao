@@ -10,7 +10,7 @@ import { useFetchUser } from "hooks/useFetchUser";
 import { createCompositeAsset } from "lib/actions";
 import type {
   AssetForRetirement,
-  PcbProject,
+  PbcProject,
 } from "lib/types/carbonmark.types";
 import { NextPage } from "next";
 import Link from "next/link";
@@ -20,7 +20,7 @@ import { RetireForm } from "./RetireForm";
 import * as styles from "./styles";
 
 export type RetirePageProps = {
-  project: PcbProject;
+  project: PbcProject;
   translation: Messages;
   fixedThemeName: string;
 };
@@ -38,6 +38,7 @@ export const Retire: NextPage<RetirePageProps> = (props) => {
     // Current user, fetch all listings
     query: { expiresAfter: "0" },
   });
+
   const [retirementAsset, setRetirementAsset] =
     useState<AssetForRetirement | null>(null);
   const isConnectedUser = isConnected && address;
