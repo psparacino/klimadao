@@ -25,7 +25,7 @@ export type Asset = SDKAsset;
 export type CarouselImage = Image;
 export type CategoryName = keyof typeof CATEGORY_INFO;
 
-export interface PcbProject {
+export interface PbcProject {
   id: string;
   projectID: string;
   name: string;
@@ -166,7 +166,7 @@ export type AssetForRetirement = {
   tokenName: string;
   balance: string;
   tokenSymbol: string; // 1: C3T, 2: TCO2
-  project: PcbProject;
+  project: PbcProject;
   token: Asset["token"];
 };
 
