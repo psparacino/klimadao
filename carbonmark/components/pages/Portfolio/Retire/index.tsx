@@ -10,7 +10,7 @@ import { useFetchUser } from "hooks/useFetchUser";
 import { createCompositeAsset } from "lib/actions";
 import type {
   AssetForRetirement,
-  PbcProject,
+  ProjectRetirementDetails,
 } from "lib/types/carbonmark.types";
 import { NextPage } from "next";
 import Link from "next/link";
@@ -20,7 +20,7 @@ import { RetireForm } from "./RetireForm";
 import * as styles from "./styles";
 
 export type RetirePageProps = {
-  project: PbcProject;
+  project: ProjectRetirementDetails;
   translation: Messages;
   fixedThemeName: string;
 };
@@ -58,16 +58,16 @@ export const Retire: NextPage<RetirePageProps> = (props) => {
   useEffect(() => {
     if (isConnected && !isLoading && carbonmarkUser) {
       function createRetirementAsset() {
-        // unlikely, but this allows for duplicate projects
-        const targetProject = Array.isArray(props.project)
-          ? props.project[0]
-          : undefined;
+        // const targetProject = Array.isArray(props.project)
+        //   ? props.project[0]
+        //   : undefined;
+
+        const targetProject = props.project;
 
         if (targetProject && carbonmarkUser?.assets) {
           const asset = carbonmarkUser?.assets.filter((asset) => {
             return asset.token.id == targetProject.tokenAddress;
           })[0];
-
           if (!asset) {
             router.push("/portfolio");
             return;

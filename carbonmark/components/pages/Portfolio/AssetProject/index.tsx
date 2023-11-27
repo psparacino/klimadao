@@ -1,3 +1,4 @@
+import { useWeb3 } from "@klimadao/lib/utils";
 import { Trans } from "@lingui/macro";
 import { ButtonPrimary } from "components/Buttons/ButtonPrimary";
 import { CarbonmarkButton } from "components/CarbonmarkButton";
@@ -32,11 +33,20 @@ interface Props {
 
 export const AssetProject: FC<Props> = (props) => {
   const { locale } = useRouter();
+  const { networkLabel } = useWeb3();
   const category = props.asset.project?.methodologies?.[0]?.category || "Other";
 
   const isSellable = hasListableBalance(props.asset, props.listings);
   const listedBalance = getListedBalance(props.asset, props.listings);
   const unlistedBalance = getUnlistedBalance(props.asset, props.listings);
+
+  const constructUrl = () => {
+    let url = `/portfolio/${props.asset.token.id}/retire?network=${networkLabel}`;
+    if (props.asset.project?.key.startsWith("ICR")) {
+      url += `&vintage=${props.asset.project.vintage}`;
+    }
+    return url;
+  };
 
   return (
     <Card>
@@ -83,7 +93,7 @@ export const AssetProject: FC<Props> = (props) => {
         <ButtonPrimary
           label={<Trans>Retire</Trans>}
           disabled={unlistedBalance <= 0}
-          href={`/portfolio/${props.asset.token.id}/retire`}
+          href={constructUrl()}
           renderLink={(linkProps) => <Link {...linkProps} />}
           onClick={() => {
             LO.track("Retire: Retire Button Clicked");

@@ -28,6 +28,8 @@ export const DetailedProjectModel = Type.Object({
   activities: Type.Array(ActivityModel),
   price: Type.String(),
   vintage: Type.String(),
+  serialization: Nullable(Type.String()),
+  tokenId: Nullable(Type.String()),
 });
 
 export type DetailedProject = Static<typeof DetailedProjectModel>;
