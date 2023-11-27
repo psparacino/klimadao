@@ -32,11 +32,12 @@ export const Retire: NextPage<RetirePageProps> = (props) => {
     toggleModal,
     provider,
     initializing,
+    networkLabel,
   } = useWeb3();
   const { carbonmarkUser, isLoading } = useFetchUser({
     params: { walletOrHandle: address },
     // Current user, fetch all listings
-    query: { expiresAfter: "0" },
+    query: { expiresAfter: "0", network: networkLabel },
   });
 
   const [retirementAsset, setRetirementAsset] =
@@ -58,10 +59,6 @@ export const Retire: NextPage<RetirePageProps> = (props) => {
   useEffect(() => {
     if (isConnected && !isLoading && carbonmarkUser) {
       function createRetirementAsset() {
-        // const targetProject = Array.isArray(props.project)
-        //   ? props.project[0]
-        //   : undefined;
-
         const targetProject = props.project;
 
         if (targetProject && carbonmarkUser?.assets) {

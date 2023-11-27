@@ -142,6 +142,8 @@ const handler = (fastify: FastifyInstance) =>
       listings,
       vintage,
       stats,
+      serialization: icrSerialization,
+      tokenId: projectDetails.tokenId,
     };
 
     return reply.send(JSON.stringify(projectResponse));
