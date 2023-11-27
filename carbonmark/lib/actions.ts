@@ -90,6 +90,26 @@ export const getAggregatorV2Allowance = async (params: {
   return ethersFormatUnits(BigInt(allowance), 18);
 };
 
+export const getAggregatorIsApprovedForAll = async (params: {
+  userAddress: string;
+  tokenAddress: string;
+  network: "mumbai" | "polygon";
+}): Promise<boolean> => {
+  const tokenContract = new Contract(
+    params.tokenAddress,
+    IERC1155.abi,
+    getStaticProvider({
+      chain: params.network,
+    })
+  );
+
+  const isApproved = await tokenContract.isApprovedForAll(
+    params.userAddress,
+    getAddress("retirementAggregatorV2", params.network)
+  );
+  return isApproved;
+};
+
 /** Approve a known `tokenName`, or `tokenAddress` to be spent by the `spender` contract */
 export const approveTokenSpend = async (params: {
   /** Name of a known token like "usdc" */
@@ -278,8 +298,10 @@ export const makePurchase = async (params: {
   singleUnitPrice: string;
   quantity: string;
   provider: providers.JsonRpcProvider;
+  projectKey: string;
   onStatus: OnStatusHandler;
 }): Promise<Transaction> => {
+  console.log("makePurchase params", params);
   try {
     const signer = params.provider.getSigner();
     const network = getSignerNetwork(signer);
@@ -304,7 +326,9 @@ export const makePurchase = async (params: {
         trimWithLocale(params.singleUnitPrice, 6),
         getTokenDecimals("usdc")
       ),
-      parseUnits(params.quantity, 18),
+      params.projectKey.startsWith("ICR")
+        ? params.quantity
+        : parseUnits(params.quantity, 18),
       parseUnits(maxCost, getTokenDecimals("usdc"))
     );
 
@@ -400,7 +424,7 @@ export const addProjectsToAssets = async (params: {
 
 interface CompositeAssetParams {
   asset: Asset;
-  project: PbcProject;
+  project: ProjectRetirementDetails | null;
 }
 
 export const createCompositeAsset = (
