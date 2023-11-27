@@ -1,4 +1,4 @@
-import { concatAddress } from "@klimadao/lib/utils";
+import { concatAddress, useWeb3 } from "@klimadao/lib/utils";
 import { t } from "@lingui/macro";
 import { Layout } from "components/Layout";
 import { PageHead } from "components/PageHead";
@@ -56,16 +56,23 @@ const Page: NextPage<PageProps> = (props) => {
   );
 };
 
-export const Users: NextPage<PageProps> = (props) => (
-  <SWRConfig
-    value={{
-      fetcher,
-      fallback: {
-        [fetchUserURL({ params: { walletOrHandle: props.userAddress } })]:
-          props.carbonmarkUser,
-      },
-    }}
-  >
-    <Page {...props} />
-  </SWRConfig>
-);
+export const Users: NextPage<PageProps> = (props) => {
+  const { networkLabel } = useWeb3();
+  return (
+    <SWRConfig
+      value={{
+        fetcher,
+        fallback: {
+          [fetchUserURL({
+            params: {
+              walletOrHandle: props.userAddress,
+            },
+            query: { network: networkLabel },
+          })]: props.carbonmarkUser,
+        },
+      }}
+    >
+      <Page {...props} />
+    </SWRConfig>
+  );
+};

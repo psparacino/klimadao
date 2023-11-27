@@ -1,5 +1,6 @@
 import { cx } from "@emotion/css";
 import { fetcher } from "@klimadao/carbonmark/lib/fetcher";
+import { useWeb3 } from "@klimadao/lib/utils";
 import { t } from "@lingui/macro";
 import { Layout } from "components/Layout";
 import { PageHead } from "components/PageHead";
@@ -31,9 +32,11 @@ const views = {
 const Page: NextPage = () => {
   const router = useRouter();
   const { isMobile } = useResponsive();
+  const { networkLabel } = useWeb3();
 
   const { params, updateQueryParams } = useProjectsParams();
-  const { projects, isLoading, isValidating } = useFetchProjects();
+
+  const { projects, isLoading, isValidating } = useFetchProjects(networkLabel);
 
   const sortFn = get(PROJECT_SORT_FNS, params.sort) ?? identity;
   const sortedProjects = sortFn(projects);
