@@ -8,6 +8,7 @@ import {
 import { convertIcrCountryCodeToName } from "../ICR/icr.utils";
 import { arrayToMap } from "../array.utils";
 import { extract, notNil, selector } from "../functional.utils";
+import { getCategoryFromMethodology } from "../getCategoryFromMethodoloy";
 import { GQL_SDK } from "../gqlSdk";
 import { ICR_API } from "./../../../src/utils/ICR/ICR_API_endpoints";
 
@@ -108,7 +109,10 @@ export const fetchCarbonProject = async (
         }
         return null;
       };
-
+      console.info(
+        "apiData",
+        getCategoryFromMethodology(apiData.methodology.id)
+      );
       return {
         // slice off the -<vintage> from the end of the serialization to fit existing key format
         key: args.serialization,
@@ -128,7 +132,7 @@ export const fetchCarbonProject = async (
               /**
                * @todo need to figure out how to import getCategoryFromMethodology to convert id to category name
                */
-              category: "Other",
+              category: getCategoryFromMethodology(apiData.methodology.id),
               name: apiData.methodology.title,
             },
           ] || null,

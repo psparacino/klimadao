@@ -4,6 +4,7 @@ import { map } from "lodash/fp";
 import type { IcrProject } from "src/utils/ICR/icr.types";
 import { ICR_API } from "../../../src/utils/ICR/ICR_API_endpoints";
 import { convertIcrCountryCodeToName } from "../../../src/utils/ICR/icr.utils";
+import { getCategoryFromMethodology } from "../../../src/utils/getCategoryFromMethodoloy";
 import { Geopoint } from "../../.generated/types/carbonProjects.types";
 import { GetProjectsQuery } from "../../.generated/types/marketplace.types";
 import {
@@ -272,7 +273,7 @@ export const composeProjectEntries = (
           {
             id: icrProject.methodology?.id,
             name: icrProject.methodology?.title,
-            category: icrProject.methodology?.id,
+            category: getCategoryFromMethodology(icrProject.methodology?.id),
           },
         ],
         description: icrProject?.shortDescription ?? null,
