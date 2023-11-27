@@ -38,7 +38,8 @@ const handler = (fastify: FastifyInstance) =>
     request: FastifyRequest<{ Querystring: Static<typeof querystring> }>,
     reply: FastifyReply
   ): Promise<Project[]> {
-    const network = request.query.network ?? "polygon";
+    // const network = request.query.network ?? "polygon";
+    const network = "mumbai";
 
     const sdk = gql_sdk(network);
     //Transform the list params (category, country etc) provided so as to be an array of strings
@@ -49,6 +50,8 @@ const handler = (fastify: FastifyInstance) =>
 
     //Get the default args to return all results unless specified
     const allOptions = await getDefaultQueryArgs(sdk, fastify, network);
+    console.info("allOptions", args);
+
     const [
       marketplaceProjectsData,
       poolProjectsData,
@@ -60,6 +63,7 @@ const handler = (fastify: FastifyInstance) =>
         vintage: args.vintage ?? allOptions.vintage,
         search: request.query.search ?? "",
         expiresAfter: request.query.expiresAfter ?? allOptions.expiresAfter,
+        country: args.country ?? allOptions.country,
       }),
       sdk.offsets.findCarbonOffsets({
         category: args.category ?? allOptions.category,
@@ -107,12 +111,16 @@ const handler = (fastify: FastifyInstance) =>
        * to match only those for which there is an offset project that was filtered previously by country or category
        * ... if country or category were provided in the query
        */
-      .filter(({ id }) =>
-        args.category || args.country
-          ? // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- @todo Use CreditID
-            notNil(ProjectMap.get(id as CreditIdentifier))
-          : true
-      )
+      .filter(({ id }) => {
+        const isIcr = id.startsWith("ICR");
+
+        if (args.category || (args.country && !isIcr)) {
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- @todo Use CreditID
+          return notNil(ProjectMap.get(id as CreditIdentifier));
+        }
+        return true;
+      })
+
       .forEach((project) => {
         if (
           !isValidMarketplaceProject(project) ||
