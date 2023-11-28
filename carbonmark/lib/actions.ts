@@ -71,7 +71,6 @@ export const getCarbonmarkAllowance = async (params: {
     return formatUnits(allowance);
   }
 };
-
 export const getAggregatorV2Allowance = async (params: {
   userAddress: string;
   tokenAddress: string;
@@ -95,9 +94,6 @@ export const getAggregatorIsApprovedForAll = async (params: {
   tokenAddress: string;
   network: "mumbai" | "polygon";
 }): Promise<boolean> => {
-  if (params.network === "mumbai") {
-    throw new Error("There is no retirementAggregator on mumbai. Use polygon");
-  }
   const tokenContract = new Contract(
     params.tokenAddress,
     IERC1155.abi,
@@ -438,7 +434,6 @@ export const createCompositeAsset = (
   if (!project) {
     throw new Error("Project field is not defined in the asset");
   }
-
   const compositeAsset: AssetForRetirement = {
     id: asset.id,
     amount: asset.amount,
