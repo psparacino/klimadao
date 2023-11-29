@@ -63,6 +63,7 @@ export const fetchCarbonProject = async (
   sdk: FetchCarbonProjectMethod,
   args: FetchCarbonProjectArgs
 ) => {
+  console.info("fetchCarbonProject", sdk, args);
   /** @todo come up with better way to check registry type that satisfies typescript */
   if ("serialization" in args && typeof sdk === "string") {
     const url = `${sdk}/public/projects?creditSerialization=${args.serialization}`;
@@ -107,7 +108,6 @@ export const fetchCarbonProject = async (
       };
 
       return {
-        // slice off the -<vintage> from the end of the serialization to fit existing key format
         key: args.serialization,
         country: convertIcrCountryCodeToName(apiData.countryCode) || null,
         description: apiData.shortDescription || null,
@@ -116,7 +116,7 @@ export const fetchCarbonProject = async (
         registry: registry || null,
         url: apiData.website || null,
         registryProjectId: apiData.num || null,
-        id: `${registry}-${apiData.num}` || null, // args.serialization,
+        id: `${registry}-${apiData.num}` || null,
         geolocation: apiData.geoLocation || null,
         methodologies:
           [

@@ -35,12 +35,6 @@ export const SANITY_URLS = {
     "https://l6of5nwi.apicdn.sanity.io/v1/graphql/production/default",
 };
 
-/** ICR API URLS */
-export const ICR_API_URLS = {
-  polygon: "https://gaia-api-dev.mojoflower.io/v0",
-  mumbai: "https://gaia-api-dev.mojoflower.io/v0",
-};
-
 export const TOKEN_ADDRESSES = {
   development: {
     LP_UBO_POOL: "0x5400a05b8b45eaf9105315b4f2e31f806ab706de",
@@ -62,8 +56,4 @@ export const TOKEN_ADDRESSES = {
     NTC_POOL: "0xd838290e877e0188a4a44700463419ed96c16107",
     BTC_POOL: "0x2f800db0fdb5223b3c3f354886d907a671414a7f",
   },
-};
-
-export const RPC_URLS = {
-  polygonTestnetRpc: "https://rpc-mumbai.maticvigil.com",
 };
