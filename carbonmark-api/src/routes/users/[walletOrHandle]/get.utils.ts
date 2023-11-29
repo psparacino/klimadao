@@ -3,7 +3,6 @@ import { compact, sortBy, sortedUniq } from "lodash";
 import { pipe } from "lodash/fp";
 import { createICRProjectID } from "../../../../src/utils/ICR/icr.utils";
 import ERC20 from "../../../abis/ERC20.json";
-import { RPC_URLS } from "../../../app.constants";
 import { NetworkParam } from "../../../models/NetworkParam.model";
 import { Holding } from "../../../types/assets.types";
 import { gql_sdk } from "../../../utils/gqlSdk";
@@ -38,7 +37,7 @@ const mapICRInfo = (item: Record<string, any>) => {
 const fetchTestnetHoldings = async (params: {
   address: string;
 }): Promise<Holding[]> => {
-  const provider = new providers.JsonRpcProvider(RPC_URLS.polygonTestnetRpc);
+  const provider = new providers.JsonRpcProvider(urls.polygonTestnetRpc);
   const sdk = gql_sdk("mumbai");
   // we hardcode known testnet tokens here
   const TOKEN_INFO = [
