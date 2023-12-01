@@ -240,4 +240,5 @@ export type Project = {
    * @type boolean
    */
   hasSupply: boolean;
+  serialization?: string;
 };
