@@ -1,12 +1,12 @@
 import { utils } from "ethers";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { isNil } from "lodash";
-import { REGISTRIES } from "../../../../../lib/constants";
 import {
   fetchCarbonProject,
   type FetchCarbonProjectArgs,
   type FetchCarbonProjectMethod,
 } from "../../../../src/utils/helpers/carbonProjects.utils";
+import { REGISTRIES } from "../../../app.constants";
 import { Purchase } from "../../../models/Purchase.model";
 import { CreditId } from "../../../utils/CreditId";
 import { gql_sdk } from "../../../utils/gqlSdk";
