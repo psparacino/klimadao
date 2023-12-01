@@ -56,8 +56,8 @@ export const getDefaultQueryArgs = async (
 
   return {
     category,
-    country: uniqueCountries,
-    vintage: uniqueVintages,
+    country,
+    vintage,
     search: "",
     expiresAfter: Math.floor(Date.now() / 1000).toString(),
   };
