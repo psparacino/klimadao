@@ -29,7 +29,6 @@ const handler = (fastify: FastifyInstance) =>
   ): Promise<User | void> {
     try {
       const { query, params } = request;
-      const network = query.network ?? "polygon";
 
       const network = query.network ?? "polygon";
       const walletOrHandle = params.walletOrHandle.toLowerCase();
