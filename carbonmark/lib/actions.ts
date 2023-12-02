@@ -394,6 +394,7 @@ const idFromSymbol = (symbol: string) => {
 
 export const addProjectsToAssets = async (params: {
   assets: Asset[];
+  network: "polygon" | "mumbai";
 }): Promise<AssetWithProject[]> => {
   try {
     const projectIdSet = new Set<string>();
@@ -402,7 +403,7 @@ export const addProjectsToAssets = async (params: {
     });
     const projectIds = Array.from(projectIdSet);
     const projects = await Promise.all(
-      projectIds.map((id) => getProjectsId(id))
+      projectIds.map((id) => getProjectsId(id, { network: params.network }))
     );
 
     const ProjectMap = projects.reduce((PMap, p) => {
