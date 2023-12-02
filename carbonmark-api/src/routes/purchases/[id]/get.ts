@@ -76,10 +76,10 @@ const handler = async (
       project: {
         key: purchase.listing.project.key,
         vintage: purchase.listing.project.vintage,
-        methodology: project.methodologies?.[0]?.id ?? "",
-        name: project.name ?? "",
+        methodology: project?.methodologies?.[0]?.id ?? "",
+        name: project?.name ?? "",
         projectID: registryProjectId,
-        country: project.country ?? "",
+        country: project?.country ?? "",
       },
     },
   };
