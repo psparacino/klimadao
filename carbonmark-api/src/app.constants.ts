@@ -23,6 +23,8 @@ const MUMBAI_URLS = {
   ...POLYGON_URLS,
   digitalCarbon: `${GRAPH_API_ROOT}/psparacino/digital-carbon`,
   marketplace: `${GRAPH_API_ROOT_ID}/QmUUnZTeRnfsJsQaTwLeiHmAQ5xvtk2jBW7VeP3AEW5bnv`,
+  // cujo
+  // marketplace: `${GRAPH_API_ROOT_ID}/Qmeu2aQpLb89xn8QXaQv4efCtBm1oKzcTri37SGkjp6tXG`,
   icr: `${GRAPH_API_ROOT}/skjaldbaka17/carbon-registry-test`,
 };
 
