@@ -15,7 +15,6 @@ const POLYGON_URLS = {
   offsets: `${GRAPH_API_ROOT}/klimadao/polygon-bridged-carbon`,
   tokens: `${GRAPH_API_ROOT}/klimadao/klimadao-pairs`,
   // previous subgraph @todo delete when new subgraph below is confirmed working
-  // digitalCarbon: `${GRAPH_API_ROOT}/klimadao/polygon-digital-carbon`,
   digitalCarbon: `${GRAPH_API_ROOT_ID}/Qmeu2aQpLb89xn8QXaQv4efCtBm1oKzcTri37SGkjp6tXG`,
   icr: `${GRAPH_API_ROOT}/skjaldbaka17/carbon-registry-polygon`,
 };
