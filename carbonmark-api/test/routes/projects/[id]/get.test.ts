@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import nock from "nock";
 import { GRAPH_URLS, SANITY_URLS } from "../../../../src/app.constants";
+import { ICR_API } from "../../../../src/utils/ICR/ICR_API_endpoints";
 import { fixtures } from "../../../fixtures";
 import digitalCarbon from "../../../fixtures/digitalCarbon";
 import tokens from "../../../fixtures/tokens";
@@ -13,9 +14,12 @@ const mockActivities = fixtures.marketplace.activities;
 
 describe("GET /projects/:id", () => {
   let fastify: FastifyInstance;
+  let ICR_API_URL: string;
 
   // Setup the server
   beforeEach(async () => {
+    const icrApiValues = ICR_API("polygon");
+    ICR_API_URL = icrApiValues.ICR_API_URL;
     try {
       fastify = await build();
     } catch (e) {
