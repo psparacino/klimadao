@@ -52,6 +52,10 @@ export const COUNTRIES = [
   },
 ];
 
+export const COUNTRY_CODES = ["CN", "ES", "GB", "IS", "UA", "VN"];
+
+export const VINTAGES = ["2020", "2021", "2022", "2023"];
+
 export const MOCK_USER_PROFILE: UserProfile = {
   address: MOCK_ADDRESS,
   createdAt: new Date("1970-01-01T00:00:00Z").getTime(),
