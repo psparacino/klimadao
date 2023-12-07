@@ -6,6 +6,12 @@ import { COUNTRY_CODES, VINTAGES } from "../../../test/fixtures/icr";
 import { build } from "../../helper";
 import { DEV_URL, ERROR } from "../../test.constants";
 
+jest.mock("../../../src/utils/ICR/ICR_API_endpoints", () => ({
+  ICR_API: () => ({
+    ICR_API_URL: "https://api.carbonregistry.com/v0",
+  }),
+}));
+
 describe("GET /vintages", () => {
   let fastify: FastifyInstance;
   let ICR_API_URL: string;
@@ -16,6 +22,7 @@ describe("GET /vintages", () => {
     ICR_API_URL = icrApiValues.ICR_API_URL;
 
     fastify = await build();
+    nock.cleanAll();
   });
 
   /** A default response for digital-carbon */
