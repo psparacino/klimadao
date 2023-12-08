@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { pick, set } from "lodash";
 import nock from "nock";
+import { NetworkParam } from "src/models/NetworkParam.model";
 import { GRAPH_URLS, SANITY_URLS } from "../../../src/app.constants";
 import { ICR_API } from "../../../src/utils/ICR/ICR_API_endpoints";
 import { fixtures } from "../../fixtures";
@@ -91,19 +92,23 @@ jest.mock("../../../src/routes/projects/get.utils", () => {
 });
 
 jest.mock("../../../src/utils/ICR/ICR_API_endpoints", () => ({
-  ICR_API: () => ({
-    ICR_API_URL: "https://api.carbonregistry.com/v0",
-  }),
+  ICR_API: (network: NetworkParam) => {
+    let baseUrl = "https://api.carbonregistry.com/v0";
+    if (network === "mumbai") {
+      baseUrl = "https://gaia-api-dev.mojoflower.io/v0";
+    }
+    return { ICR_API_URL: baseUrl };
+  },
 }));
-
 describe("GET /projects", () => {
   let fastify: FastifyInstance;
   let ICR_API_URL: string;
+  let ICR_API_URL_MUMBAI: string;
 
   // Setup the server
   beforeEach(async () => {
-    const icrApiValues = ICR_API("polygon");
-    ICR_API_URL = icrApiValues.ICR_API_URL;
+    ICR_API_URL = ICR_API("polygon").ICR_API_URL;
+    ICR_API_URL_MUMBAI = ICR_API("mumbai").ICR_API_URL;
     try {
       fastify = await build();
     } catch (e) {
@@ -119,7 +124,10 @@ describe("GET /projects", () => {
       })
       .persist();
   });
-  afterEach(async () => await fastify.close());
+  afterEach(async () => {
+    await fastify.close();
+    nock.cleanAll();
+  });
 
   // /** The happy path */
   test("Returns 200", async () => {
@@ -137,6 +145,18 @@ describe("GET /projects", () => {
     nock(ICR_API_URL)
       .get("/public/projects/list")
       .reply(200, { projects: [mockICRProject] });
+
+    // mumbai nocks backup
+
+    nock(ICR_API_URL_MUMBAI)
+      .get("/public/projects/list")
+      .reply(200, { projects: [mockICRProject] });
+
+    nock(GRAPH_URLS["mumbai"].marketplace)
+      .post("")
+      .reply(200, {
+        data: { projects: [marketplace.projectWithListing] },
+      });
 
     const response = await fastify.inject({
       method: "GET",
@@ -157,6 +177,15 @@ describe("GET /projects", () => {
       .reply(200, { data: { projects: [] } }); // no marketplace projects
 
     nock(ICR_API_URL).get("/public/projects/list").reply(200, { projects: [] });
+
+    // mumabi nocks backup
+    nock(ICR_API_URL_MUMBAI)
+      .get("/public/projects/list")
+      .reply(200, { projects: [] });
+
+    nock(GRAPH_URLS["mumbai"].marketplace)
+      .post("")
+      .reply(200, { data: { projects: [] } }); // no marketplace projects
 
     const response = await fastify.inject({
       method: "GET",
@@ -228,6 +257,16 @@ describe("GET /projects", () => {
     nock(ICR_API_URL)
       .get("/public/projects/list")
       .reply(200, { projects: [mockICRProject] });
+
+    // mumabi nocks backup
+
+    nock(ICR_API_URL_MUMBAI)
+      .get("/public/projects/list")
+      .reply(200, { projects: [mockICRProject] });
+
+    nock(GRAPH_URLS["mumbai"].marketplace)
+      .post("")
+      .reply(200, { data: { projects: [marketplace.projectWithListing] } });
 
     const response = await fastify.inject({
       method: "GET",
@@ -336,6 +375,13 @@ describe("GET /projects", () => {
     nock(ICR_API_URL)
       .get("/public/projects/list")
       .reply(200, { projects: [mockICRProject] });
+
+    // mumbai nocks backup
+
+    nock(ICR_API_URL_MUMBAI)
+      .get("/public/projects/list")
+      .reply(200, { projects: [mockICRProject] });
+
     // override so listing is cheaper
     const project = set(
       marketplace.projectWithListing,
