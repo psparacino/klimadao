@@ -376,12 +376,6 @@ describe("GET /projects", () => {
       .get("/public/projects/list")
       .reply(200, { projects: [mockICRProject] });
 
-    // mumbai nocks backup
-
-    nock(ICR_API_URL_MUMBAI)
-      .get("/public/projects/list")
-      .reply(200, { projects: [mockICRProject] });
-
     // override so listing is cheaper
     const project = set(
       marketplace.projectWithListing,
@@ -389,6 +383,16 @@ describe("GET /projects", () => {
       "1234560"
     );
     nock(GRAPH_URLS["polygon"].marketplace)
+      .post("")
+      .reply(200, { data: { projects: [project] } });
+
+    // mumbai nocks backup
+
+    nock(ICR_API_URL_MUMBAI)
+      .get("/public/projects/list")
+      .reply(200, { projects: [mockICRProject] });
+
+    nock(GRAPH_URLS["mumbai"].marketplace)
       .post("")
       .reply(200, { data: { projects: [project] } });
 
