@@ -62,10 +62,13 @@ const handler = async (
     fetchCarbonProjectMethod,
     fetchCarbonProjectArgs
   );
+  const amount = purchase.listing.project.key.startsWith("ICR")
+    ? purchase.amount
+    : utils.formatUnits(purchase.amount, 18);
 
   const response: Purchase = {
     id: purchase.id,
-    amount: utils.formatUnits(purchase.amount, 18),
+    amount: amount,
     price: utils.formatUnits(purchase.price, 6),
     listing: {
       id: purchase.listing.id,
