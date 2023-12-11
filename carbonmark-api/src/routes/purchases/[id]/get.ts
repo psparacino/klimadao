@@ -24,10 +24,11 @@ const handler = async (
   if (!isValidPurchaseId(request.params.id)) {
     return reply.badRequest("Invalid purchase id: " + request.params.id);
   }
-  const sdk = gql_sdk(request.query.network);
+  const network = request.query.network ?? "polygon";
+
+  const sdk = gql_sdk(network);
 
   const { purchase } = await sdk.marketplace.getPurchaseById(request.params);
-
   /** Handle the not found case */
   if (isNil(purchase)) {
     return reply.status(404).send({ error: "Purchase not found" });
@@ -41,11 +42,13 @@ const handler = async (
 
   switch (standard) {
     case REGISTRIES["ICR"].id: {
-      const { ICR_API_URL } = ICR_API(request.query.network);
+      const { ICR_API_URL } = ICR_API(network);
       fetchCarbonProjectMethod = ICR_API_URL;
       fetchCarbonProjectArgs = {
-        serialization: request.params.id,
-        network: request.query.network || "polygon",
+        // use tokenAddress in place of the serialization for purchases
+        contractAddress: purchase.listing.tokenAddress,
+
+        network: network,
       };
       break;
     }
@@ -54,7 +57,7 @@ const handler = async (
       fetchCarbonProjectArgs = {
         registry: standard,
         registryProjectId,
-        network: request.query.network || "polygon",
+        network: network,
       };
       break;
   }
