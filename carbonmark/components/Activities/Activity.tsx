@@ -89,6 +89,10 @@ export const Activity = (props: Props) => {
     transactionString = "->";
   }
 
+  const shouldDisplayActivity = amountA !== amountB;
+  if (!shouldDisplayActivity) {
+    return null;
+  }
   return (
     <div key={props.activity.id} className={styles.activity}>
       {project && (
