@@ -73,6 +73,7 @@ export const URLS = {
   polygonTestnetRpc: "https://rpc-mumbai.maticvigil.com",
 };
 
+/** Definitions of available registries */
 export const REGISTRIES = {
   Verra: {
     id: "VCS",
