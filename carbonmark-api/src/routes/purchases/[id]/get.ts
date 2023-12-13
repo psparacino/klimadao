@@ -45,9 +45,9 @@ const handler = async (
       const { ICR_API_URL } = ICR_API(network);
       fetchCarbonProjectMethod = ICR_API_URL;
       fetchCarbonProjectArgs = {
-        // use tokenAddress in place of the serialization for purchases
+        // @todo use tokenAddress in place of the serialization for purchases as the serialization is not available on marketplace subgraph
         contractAddress: purchase.listing.tokenAddress,
-
+        vintage: purchase.listing.project.vintage,
         network: network,
       };
       break;
@@ -65,6 +65,7 @@ const handler = async (
     fetchCarbonProjectMethod,
     fetchCarbonProjectArgs
   );
+
   const amount = purchase.listing.project.key.startsWith("ICR")
     ? purchase.amount
     : utils.formatUnits(purchase.amount, 18);
@@ -86,6 +87,7 @@ const handler = async (
         name: project?.name ?? "",
         projectID: registryProjectId,
         country: project?.country ?? "",
+        serialization: project?.key ?? undefined,
       },
     },
   };
