@@ -10,7 +10,7 @@ import {
   type FetchCarbonProjectArgs,
   type FetchCarbonProjectMethod,
   type ProjectImage,
-} from "../../../utils/helpers/carbonProjects.utils";
+} from "../../../utils/helpers/cms.utils";
 
 import { fetchMarketplaceListings } from "../../../utils/helpers/fetchMarketplaceListings";
 import { fetchPoolPricesAndStats } from "../../../utils/helpers/fetchPoolPricesAndStats";

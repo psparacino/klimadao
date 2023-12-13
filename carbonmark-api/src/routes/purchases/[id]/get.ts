@@ -5,7 +5,7 @@ import {
   fetchCarbonProject,
   type FetchCarbonProjectArgs,
   type FetchCarbonProjectMethod,
-} from "../../../../src/utils/helpers/carbonProjects.utils";
+} from "../../../../src/utils/helpers/cms.utils";
 import { REGISTRIES } from "../../../app.constants";
 import { Purchase } from "../../../models/Purchase.model";
 import { CreditId } from "../../../utils/CreditId";
