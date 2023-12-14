@@ -14,10 +14,10 @@ const POLYGON_URLS = {
   assets: `${GRAPH_API_ROOT}/cujowolf/klima-refi-current-holdings`,
   offsets: `${GRAPH_API_ROOT}/klimadao/polygon-bridged-carbon`,
   tokens: `${GRAPH_API_ROOT}/klimadao/klimadao-pairs`,
-  // Temp revert because old subgraph down
-  // digitalCarbon: `${GRAPH_API_ROOT_ID}/Qmeu2aQpLb89xn8QXaQv4efCtBm1oKzcTri37SGkjp6tXG`,
   digitalCarbon: `${GRAPH_API_ROOT}/klimadao/polygon-digital-carbon`,
-  icr: `${GRAPH_API_ROOT}/skjaldbaka17/carbon-registry-polygon`,
+  // main-test is for ICR's mainnet test registry. Use below for merge
+  // icr: `${GRAPH_API_ROOT}/skjaldbaka17/carbon-registry-polygon`,
+  icr: `${GRAPH_API_ROOT}/skjaldbaka17/carbon-registry-main-test`,
 };
 
 const MUMBAI_URLS = {
