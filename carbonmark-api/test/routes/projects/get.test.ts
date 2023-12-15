@@ -143,13 +143,13 @@ describe("GET /projects", () => {
       });
 
     nock(ICR_API_URL)
-      .get("/public/projects/list")
+      .get("/public/projects/list?page=0&limit=50")
       .reply(200, { projects: [mockICRProject] });
 
     // mumbai nocks backup
 
     nock(ICR_API_URL_MUMBAI)
-      .get("/public/projects/list")
+      .get("/public/projects/list?page=0&limit=50")
       .reply(200, { projects: [mockICRProject] });
 
     nock(GRAPH_URLS["mumbai"].marketplace)
@@ -176,11 +176,13 @@ describe("GET /projects", () => {
       .post("")
       .reply(200, { data: { projects: [] } }); // no marketplace projects
 
-    nock(ICR_API_URL).get("/public/projects/list").reply(200, { projects: [] });
+    nock(ICR_API_URL)
+      .get("/public/projects/list?page=0&limit=50")
+      .reply(200, { projects: [] });
 
     // mumabi nocks backup
     nock(ICR_API_URL_MUMBAI)
-      .get("/public/projects/list")
+      .get("/public/projects/list?page=0&limit=50")
       .reply(200, { projects: [] });
 
     nock(GRAPH_URLS["mumbai"].marketplace)
@@ -255,13 +257,13 @@ describe("GET /projects", () => {
       .reply(200, { data: { projects: [marketplace.projectWithListing] } });
 
     nock(ICR_API_URL)
-      .get("/public/projects/list")
+      .get("/public/projects/list?page=0&limit=50")
       .reply(200, { projects: [mockICRProject] });
 
     // mumabi nocks backup
 
     nock(ICR_API_URL_MUMBAI)
-      .get("/public/projects/list")
+      .get("/public/projects/list?page=0&limit=50")
       .reply(200, { projects: [mockICRProject] });
 
     nock(GRAPH_URLS["mumbai"].marketplace)
@@ -373,7 +375,7 @@ describe("GET /projects", () => {
       });
 
     nock(ICR_API_URL)
-      .get("/public/projects/list")
+      .get("/public/projects/list?page=0&limit=50")
       .reply(200, { projects: [mockICRProject] });
 
     // override so listing is cheaper
@@ -389,7 +391,7 @@ describe("GET /projects", () => {
     // mumbai nocks backup
 
     nock(ICR_API_URL_MUMBAI)
-      .get("/public/projects/list")
+      .get("/public/projects/list?page=0&limit=50")
       .reply(200, { projects: [mockICRProject] });
 
     nock(GRAPH_URLS["mumbai"].marketplace)
