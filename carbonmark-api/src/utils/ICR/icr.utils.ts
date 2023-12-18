@@ -19,6 +19,10 @@ export const createICRProjectID = (serialization: string) => {
 
 export const fetchIcrFilters = async (network: NetworkParam) => {
   const { ICR_API_URL, ICR_API_KEY } = ICR_API(network);
+  let allProjects: IcrProject[] = [];
+  let page = 0;
+  const limit = 50;
+  let shouldFetchProjects = true;
 
   const url = `${ICR_API_URL}/public/projects/filters`;
   const IcrResponse = await fetch(url, {
