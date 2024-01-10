@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { compact, isNil, max, maxBy } from "lodash";
+import { compact, isArray, isNil, max, maxBy } from "lodash";
 import { concat, map, mapValues, min, pipe, trim, uniq } from "lodash/fp";
 import { NetworkParam } from "src/models/NetworkParam.model";
 import { TokenPriceT } from "src/models/TokenPrice.model";
