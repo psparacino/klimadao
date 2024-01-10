@@ -207,6 +207,10 @@
                   "country",
                   "methodology"
                 ]
+              },
+              "symbol": {
+                "description": "Symbol of the token",
+                "type": "string"
               }
             },
             "required": [
@@ -237,6 +241,7 @@
       }
     },
     "hasSupply": { "type": "boolean" },
+    "tokenId": { "type": "string" },
     "serialization": { "type": "string" }
   },
   "required": [
