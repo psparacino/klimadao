@@ -22,7 +22,6 @@ describe("GET /vintages", () => {
     ICR_API_URL = icrApiValues.ICR_API_URL;
 
     fastify = await build();
-    nock.cleanAll();
   });
 
   /** A default response for digital-carbon */
