@@ -37,7 +37,7 @@ const mapICRInfo = (item: Record<string, any>) => {
 const fetchTestnetHoldings = async (params: {
   address: string;
 }): Promise<Holding[]> => {
-  const provider = new providers.JsonRpcProvider(URLS.polygonTestnetRpc);
+  const provider = new providers.JsonRpcProvider(RPC_URLS.polygonTestnetRpc);
   const sdk = gql_sdk("mumbai");
   // we hardcode known testnet tokens here
   const TOKEN_INFO = [
